@@ -8,4 +8,8 @@ Backend for task-tracking application
 - django - backend
 - postgresql - database
 
-### How to launch
+### How to launch in development environment
+
+1. Set environment variables in .env file (for list of required variables see .env.example)
+2. 
+
