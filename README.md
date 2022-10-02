@@ -7,8 +7,9 @@ Backend for task-tracking application
 
 - django - backend
 - postgresql - database
+- development requirements are specified in todolist/requirements.dev.txt
 
-### How to launch in development environment
+### How to launch project in development environment
 
 1. Create virtual environment
 2. Install dependencies from requirements.dev.txt
@@ -25,4 +26,11 @@ Backend for task-tracking application
    - `./manage.py migrate`
 6. Launch project
    - `./manage.py runserver`
+
+### Accessing admin site
+
+1. Create admin-user
+   - `./manage.py createsuperuser`
+   - set values and required fields
+2. Access admin site at http://127.0.0.1:8000/admin/
 
