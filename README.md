@@ -47,5 +47,20 @@ Backend for task-tracking application
    - migrations would apply
    - api container would start
    - front container would start
+
+## Deploy
+
+1. Deploy is automated with github actions. 
+2. Project files used:
+   - actions: .github/workflows/actions.yaml
+   - compose file: deploy/docker-compose.ci.yaml
+   - env variables: deploy/.ci_env
+   - variables in compose and env files are replaced with github secrets
+3. Docker hub images:
+   - front: sermalenk/skypro-front:lesson-34
+   - back: kpaveliev/skypro-c06-cw06-todolist:<tag>
+4. Addresses:
+   - front: http://kpaveliev-skypro.cf
+   - admin: http://kpaveliev-skypro.cf/admin/
    
 
