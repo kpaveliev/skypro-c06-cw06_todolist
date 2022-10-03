@@ -34,14 +34,14 @@ Backend for task-tracking application
    - set values and required fields
 2. Access admin site at http://127.0.0.1:8000/admin/
 
-## How to launch project with Docker-compose
+## How to launch project in development with Docker-compose
 
 1. Create .docker_env file in deploy folder:
    - you can copy the default variables from todolist/.env.example
    - make sure to set DB_HOST to `db` which is a container name
 2. Use docker-compose.dev.yaml from within deploy folder
    - `cd deploy`
-   - `docker compose --env-file ./.docker_env -f docker-compose.dev.yaml up -d`
+   - `docker compose --env-file .docker_env -f docker-compose.dev.yaml up -d`
 3. The following would be done:
    - postgresql container would start
    - migrations would apply

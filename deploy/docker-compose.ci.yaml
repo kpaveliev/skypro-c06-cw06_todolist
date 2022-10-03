@@ -22,7 +22,7 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./.docker_env:/code/.env
+      - ./.env:/code/.env
     networks:
       - avito_front_network
       - avito_db_network
@@ -34,7 +34,7 @@ services:
       db:
         condition: service_healthy
     volumes:
-      - ./.docker_env:/code/.env
+      - ./.env:/code/.env
     networks:
       - avito_db_network
     command: >
