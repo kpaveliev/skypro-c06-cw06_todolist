@@ -5,7 +5,7 @@ services:
   frontend:
     image: sermalenk/skypro-front:lesson-34
     ports:
-      - "8080:80"
+      - "80:80"
     depends_on:
       - db
       - api
@@ -13,7 +13,7 @@ services:
       - avito_front_network
 
   api:
-    build: ../todolist/.
+    image: kpaveliev/skypro-c06-cw06-todolist:${GITHUB_REF_NAME}-${GITHUB_RUN_ID}
     depends_on:
       migrations:
         condition: service_completed_successfully
@@ -22,19 +22,19 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./.docker_env:/code/.env
+      - ./.env:/code/.env
     networks:
       - avito_front_network
       - avito_db_network
 
 
   migrations:
-    build: ../todolist/.
+    image: kpaveliev/skypro-c06-cw06-todolist:${GITHUB_REF_NAME}-${GITHUB_RUN_ID}
     depends_on:
       db:
         condition: service_healthy
     volumes:
-      - ./.docker_env:/code/.env
+      - ./.env:/code/.env
     networks:
       - avito_db_network
     command: >
@@ -51,7 +51,7 @@ services:
       POSTGRES_DB: ${DB_NAME}
     restart: always
     ports:
-      - "5432:5432"
+      - "${DB_PORT}:${DB_PORT}"
     networks:
       - avito_db_network
     healthcheck:
