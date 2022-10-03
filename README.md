@@ -59,7 +59,11 @@ Backend for task-tracking application
 3. Docker hub images:
    - front: sermalenk/skypro-front:lesson-34
    - back: kpaveliev/skypro-c06-cw06-todolist:<tag>
-4. Addresses:
+4. To add admin during first launch:
+   - connect to server and access project folder
+   - `docker exec -it <api container_id> /bin/bash`
+   - `./manage.py createsuperuser`
+5. Addresses:
    - front: http://kpaveliev-skypro.cf
    - admin: http://kpaveliev-skypro.cf/admin/
    
