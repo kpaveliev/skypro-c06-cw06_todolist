@@ -21,8 +21,7 @@ class LoginView(APIView):
         username = request.data.get('username')
         password = request.data.get('password')
 
-        user = authenticate(username=username, password=password)
-        print(user)
+        user = authenticate(request, username=username, password=password)
         if user:
             login(request, user)
             return Response(status=status.HTTP_200_OK)
