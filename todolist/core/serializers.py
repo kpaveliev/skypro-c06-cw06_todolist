@@ -41,3 +41,15 @@ class LoginSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = '__all__'
+
+
+class RetrieveUpdateSerializer(serializers.ModelSerializer):
+    pk = serializers.IntegerField(read_only=True)
+    username = serializers.CharField(required=False, max_length=50)
+    first_name = serializers.CharField(required=False, allow_blank=True, max_length=50)
+    last_name = serializers.CharField(required=False, allow_blank=True, max_length=50)
+    email = serializers.EmailField(required=False)
+
+    class Meta:
+        model = User
+        fields = ['pk', 'username', 'first_name', 'last_name', 'email']

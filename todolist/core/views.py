@@ -1,11 +1,12 @@
 from django.contrib.auth import authenticate, login
+from django.views.decorators.csrf import ensure_csrf_cookie
 from rest_framework import status
-from rest_framework.generics import CreateAPIView
+from rest_framework.generics import CreateAPIView, RetrieveUpdateAPIView
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .models import User
-from .serializers import SignUpSerializer
+from .serializers import SignUpSerializer, RetrieveUpdateSerializer
 
 
 class SignUpView(CreateAPIView):
@@ -27,3 +28,9 @@ class LoginView(APIView):
             return Response(status=status.HTTP_200_OK)
 
         return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+
+# @ensure_csrf_cookie
+class UserRetrieveUpdateView(RetrieveUpdateAPIView):
+    queryset = User.objects.all()
+    serializer_class = RetrieveUpdateSerializer
