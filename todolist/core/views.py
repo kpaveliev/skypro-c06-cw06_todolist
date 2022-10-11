@@ -2,6 +2,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.views.decorators.csrf import ensure_csrf_cookie
 from rest_framework import status
 from rest_framework.generics import CreateAPIView, RetrieveUpdateDestroyAPIView, UpdateAPIView
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -33,6 +34,7 @@ class LoginView(APIView):
 class UserRetrieveUpdateView(RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
     serializer_class = RetrieveUpdateSerializer
+    permission_classes = [IsAuthenticated,]
 
     def get_object(self):
         return self.request.user
@@ -45,6 +47,7 @@ class UserRetrieveUpdateView(RetrieveUpdateDestroyAPIView):
 class PasswordUpdateView(UpdateAPIView):
     serializer_class = PasswordUpdateSerializer
     model = User
+    permission_classes = [IsAuthenticated,]
 
     def get_object(self):
         return self.request.user
