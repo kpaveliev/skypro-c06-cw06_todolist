@@ -30,10 +30,12 @@ class LoginView(APIView):
         return Response(status=status.HTTP_401_UNAUTHORIZED)
 
 
-# @ensure_csrf_cookie
 class UserRetrieveUpdateView(RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
     serializer_class = RetrieveUpdateSerializer
+
+    def get_object(self):
+        return self.request.user
 
     def delete(self, request, *args, **kwargs):
         logout(request)

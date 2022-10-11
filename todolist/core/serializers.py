@@ -36,13 +36,6 @@ class SignUpSerializer(serializers.ModelSerializer):
         fields = ['id', 'username', 'first_name', 'last_name', 'email', 'password']
 
 
-class LoginSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = User
-        fields = '__all__'
-
-
 class RetrieveUpdateSerializer(serializers.ModelSerializer):
     pk = serializers.IntegerField(read_only=True)
     username = serializers.CharField(required=False, max_length=50)
