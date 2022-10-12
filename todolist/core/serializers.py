@@ -64,7 +64,7 @@ class RetrieveUpdateSerializer(serializers.ModelSerializer):
     username = serializers.CharField(required=False, max_length=50)
     first_name = serializers.CharField(required=False, allow_blank=True, max_length=50)
     last_name = serializers.CharField(required=False, allow_blank=True, max_length=50)
-    email = serializers.EmailField(required=False)
+    email = serializers.EmailField(required=False, allow_blank=True)
 
     def validate_username(self, value):
         """Ensure username doesn't exist"""
