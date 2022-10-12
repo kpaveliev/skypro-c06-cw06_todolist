@@ -17,17 +17,16 @@ class SignUpSerializer(serializers.ModelSerializer):
         self._password_repeat = self.initial_data.pop('password_repeat')
         return super().is_valid(raise_exception=raise_exception)
 
-    def create(self, validated_data):
-        # validate password
-        if validated_data['password'] != self._password_repeat:
+    def validate_password(self, value):
+        """Ensure password is valid"""
+        validate_password(value)
+
+    def validate(self, data):
+        """Ensure passwords match"""
+        if data.get('password') != self._password_repeat:
             raise serializers.ValidationError({'password_repeat': ['Passwords must match']})
 
-        try:
-            validate_password(validated_data['password'])
-        except ValidationError as e:
-            raise serializers.ValidationError({'password': [e]})
-
-        # create object
+    def create(self, validated_data):
         user = User.objects.create(**validated_data)
         user.set_password(user.password)
         user.save()
