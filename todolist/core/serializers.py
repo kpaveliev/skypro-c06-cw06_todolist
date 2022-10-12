@@ -10,7 +10,7 @@ class SignUpSerializer(serializers.ModelSerializer):
     username = serializers.CharField(required=True, max_length=50)
     first_name = serializers.CharField(required=False, allow_blank=True, max_length=50)
     last_name = serializers.CharField(required=False, allow_blank=True, max_length=50)
-    email = serializers.EmailField(required=False)
+    email = serializers.EmailField(required=False, allow_blank=True)
     password = serializers.CharField(required=True)
 
     def is_valid(self, raise_exception=False):
@@ -21,7 +21,7 @@ class SignUpSerializer(serializers.ModelSerializer):
 
         # validate password
         if validated_data['password'] != self._password_repeat:
-            raise ValidationError('Passwords must match')
+            raise ValidationError(['Passwords must match'])
 
         validate_password(validated_data['password'])
 
