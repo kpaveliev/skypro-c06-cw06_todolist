@@ -20,7 +20,7 @@ class SignUpSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         # validate password
         if validated_data['password'] != self._password_repeat:
-            raise serializers.ValidationError({'password_repeat': ['Passwords must match'])
+            raise serializers.ValidationError({'password_repeat': ['Passwords must match']})
 
         try:
             validate_password(validated_data['password'])
