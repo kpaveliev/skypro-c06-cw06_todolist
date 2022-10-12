@@ -48,6 +48,17 @@ class SignUpSerializer(serializers.ModelSerializer):
         fields = ['id', 'username', 'first_name', 'last_name', 'email', 'password']
 
 
+class LoginSerializer(serializers.Serializer):
+    username = serializers.CharField(required=True)
+    password = serializers.CharField(required=True)
+
+    def validate_username(self, value):
+        """Ensure username exists"""
+        if not User.objects.filter(username=value).exists():
+            raise serializers.ValidationError(["User with such username doesn't exist"])
+        return value
+
+
 class RetrieveUpdateSerializer(serializers.ModelSerializer):
     id = serializers.IntegerField(read_only=True)
     username = serializers.CharField(required=False, max_length=50)
