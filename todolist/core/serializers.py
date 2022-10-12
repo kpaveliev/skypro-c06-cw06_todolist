@@ -1,5 +1,4 @@
 from django.contrib.auth.password_validation import validate_password
-from django.core.exceptions import ValidationError
 from rest_framework import serializers
 
 from .models import User
@@ -16,6 +15,11 @@ class SignUpSerializer(serializers.ModelSerializer):
     def is_valid(self, raise_exception=False):
         self._password_repeat = self.initial_data.pop('password_repeat')
         return super().is_valid(raise_exception=raise_exception)
+
+    def validate_username(self, value):
+        """Ensure username doesn't exist"""
+        if self.Meta.model.objects.filter(username=value).exists():
+            raise serializers.ValidationError(['User with such username already exists'])
 
     def validate_password(self, value):
         """Ensure password is valid"""
@@ -43,6 +47,11 @@ class RetrieveUpdateSerializer(serializers.ModelSerializer):
     first_name = serializers.CharField(required=False, allow_blank=True, max_length=50)
     last_name = serializers.CharField(required=False, allow_blank=True, max_length=50)
     email = serializers.EmailField(required=False)
+
+    def validate_username(self, value):
+        """Ensure username doesn't exist"""
+        if self.Meta.model.objects.filter(username=value).exists():
+            raise serializers.ValidationError(['User with such username already exists'])
 
     class Meta:
         model = User
