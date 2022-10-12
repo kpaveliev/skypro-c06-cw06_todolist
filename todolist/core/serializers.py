@@ -1,4 +1,4 @@
-from django.contrib.auth.password_validation import validate_password, MinimumLengthValidator, NumericPasswordValidator
+from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 from rest_framework import serializers
 
@@ -18,12 +18,14 @@ class SignUpSerializer(serializers.ModelSerializer):
         return super().is_valid(raise_exception=raise_exception)
 
     def create(self, validated_data):
-
         # validate password
         if validated_data['password'] != self._password_repeat:
-            raise ValidationError(['Passwords must match'])
+            raise serializers.ValidationError({'password_repeat': ['Passwords must match'])
 
-        validate_password(validated_data['password'])
+        try:
+            validate_password(validated_data['password'])
+        except ValidationError as e:
+            raise serializers.ValidationError({'password': [e]})
 
         # create object
         user = User.objects.create(**validated_data)

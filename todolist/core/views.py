@@ -34,7 +34,7 @@ class LoginView(APIView):
 class UserRetrieveUpdateView(RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
     serializer_class = RetrieveUpdateSerializer
-    permission_classes = [IsAuthenticated,]
+    permission_classes = [IsAuthenticated]
 
     def get_object(self):
         return self.request.user
