@@ -19,16 +19,18 @@ class SignUpView(CreateAPIView):
 class LoginView(APIView):
     """Login user"""
 
-    def post(self, request):
+    def post(self, request, *args, **kwargs):
+        # authenticate
         username = request.data.get('username')
         password = request.data.get('password')
-
         user = authenticate(request, username=username, password=password)
+
+        # login
         if user:
             login(request, user)
             return Response(status=status.HTTP_200_OK)
 
-        return Response(status=status.HTTP_401_UNAUTHORIZED)
+        return Response(data={'password': ['Invalid credentials provided']}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserRetrieveUpdateView(RetrieveUpdateDestroyAPIView):

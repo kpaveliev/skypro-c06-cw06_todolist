@@ -13,6 +13,7 @@ class SignUpSerializer(serializers.ModelSerializer):
     password = serializers.CharField(required=True)
 
     def is_valid(self, raise_exception=False):
+        """Get password_repeat and remove from initial data"""
         self._password_repeat = self.initial_data.pop('password_repeat')
         return super().is_valid(raise_exception=raise_exception)
 
