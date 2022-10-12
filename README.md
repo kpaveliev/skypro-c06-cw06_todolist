@@ -3,11 +3,22 @@
 
 Backend for task-tracking application
 
+# Description
+
 ### Stack
 
 - django - backend
 - postgresql - database
 - development requirements are specified in todolist/requirements.dev.txt
+
+### Features
+
+1. Authentication
+   - VK Oauth
+   - basic django authentication
+2. User
+   - profile update
+   - password change
 
 ## How to launch project in development environment
 
@@ -66,5 +77,6 @@ Backend for task-tracking application
 5. Addresses:
    - front: http://kpaveliev-skypro.cf
    - admin: http://kpaveliev-skypro.cf/admin/
+   - swagger: http://kpaveliev-skypro.cf:8000/api/schema/swagger-ui/
    
 
