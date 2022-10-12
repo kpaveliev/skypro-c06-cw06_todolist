@@ -68,8 +68,13 @@ class RetrieveUpdateSerializer(serializers.ModelSerializer):
 
     def validate_username(self, value):
         """Ensure username doesn't exist"""
-        if self.Meta.model.objects.filter(username=value).exists():
+        # get current user
+        current_user = self.context['request'].user
+
+        # check username doesn't exist if it isn't current user
+        if self.Meta.model.objects.filter(username=value).exists() and current_user.username != value :
             raise serializers.ValidationError(['User with such username already exists'])
+        return value
 
     class Meta:
         model = User
