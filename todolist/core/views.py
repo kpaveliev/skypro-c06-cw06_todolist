@@ -47,7 +47,7 @@ class UserRetrieveUpdateView(RetrieveUpdateDestroyAPIView):
 class PasswordUpdateView(UpdateAPIView):
     serializer_class = PasswordUpdateSerializer
     model = User
-    permission_classes = [IsAuthenticated,]
+    permission_classes = [IsAuthenticated]
 
     def get_object(self):
         return self.request.user

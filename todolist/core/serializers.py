@@ -20,17 +20,23 @@ class SignUpSerializer(serializers.ModelSerializer):
         """Ensure username doesn't exist"""
         if self.Meta.model.objects.filter(username=value).exists():
             raise serializers.ValidationError(['User with such username already exists'])
+        return value
 
     def validate_password(self, value):
         """Ensure password is valid"""
         validate_password(value)
+        return value
 
     def validate(self, data):
         """Ensure passwords match"""
+        print(data.get('password'))
+        print(self._password_repeat)
         if data.get('password') != self._password_repeat:
             raise serializers.ValidationError({'password_repeat': ['Passwords must match']})
+        return data
 
     def create(self, validated_data):
+        """Create user"""
         user = User.objects.create(**validated_data)
         user.set_password(user.password)
         user.save()
