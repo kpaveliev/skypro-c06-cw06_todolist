@@ -1,6 +1,6 @@
-from .category import GoalCategory
+from .category import Category
 
 
 __all__ = [
-    'GoalCategory',
+    'Category',
 ]

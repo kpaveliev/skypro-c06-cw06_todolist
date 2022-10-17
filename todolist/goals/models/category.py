@@ -4,7 +4,7 @@ from django.utils import timezone
 from core.models import User
 
 
-class GoalCategory(models.Model):
+class Category(models.Model):
     class Meta:
         verbose_name = "Категория"
         verbose_name_plural = "Категории"
