@@ -1,4 +1,4 @@
-from rest_framework.generics import CreateAPIView, ListAPIView
+from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework import permissions, filters
 
 from goals.models import Category
@@ -29,3 +29,17 @@ class CategoryListView(ListAPIView):
         return Category.objects.filter(
             user=self.request.user, is_deleted=False
         )
+
+
+class CategoryView(RetrieveUpdateDestroyAPIView):
+    model = Category
+    serializer_class = CategorySerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Category.objects.filter(user=self.request.user, is_deleted=False)
+
+    def perform_destroy(self, instance):
+        instance.is_deleted = True
+        instance.save()
+        return instance
