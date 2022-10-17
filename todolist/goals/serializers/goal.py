@@ -25,14 +25,8 @@ class GoalCreateSerializer(serializers.ModelSerializer):
 
 class GoalSerializer(serializers.ModelSerializer):
     user = RetrieveUpdateSerializer(read_only=True)
-    category = serializers.SlugRelatedField(
-        source='category',
-        many=False,
-        queryset=Category.objects.all(),
-        slug_field='title'
-    )
 
     class Meta:
         model = Category
         fields = "__all__"
-        read_only_fields = ("id", "created", "updated", "user")
+        read_only_fields = ("id", "created", "updated", "user", "category", "description")

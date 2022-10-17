@@ -19,6 +19,7 @@ Backend for task-tracking application
 2. User
    - profile update
    - password change
+3. Goals, categories
 
 ## How to launch project in development environment
 
