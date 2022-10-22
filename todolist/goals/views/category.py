@@ -1,9 +1,11 @@
 from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework import permissions, filters
+from rest_framework.pagination import LimitOffsetPagination
 
 from goals.models import Category
 from goals.serializers import CategoryCreateSerializer, CategorySerializer
-from rest_framework.pagination import LimitOffsetPagination
+from goals.permissions import UserPermissions
+
 
 
 class CategoryCreateView(CreateAPIView):
@@ -34,7 +36,7 @@ class CategoryListView(ListAPIView):
 class CategoryView(RetrieveUpdateDestroyAPIView):
     model = Category
     serializer_class = CategorySerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, UserPermissions]
 
     def get_queryset(self):
         return Category.objects.filter(user=self.request.user, is_deleted=False)

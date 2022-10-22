@@ -3,7 +3,7 @@ on:
   push:
     branches:
       - main
-      - goals_app
+#      - goals_app
 jobs:
   build_and_push:
     runs-on: ubuntu-latest

@@ -6,6 +6,7 @@ from rest_framework.pagination import LimitOffsetPagination
 from goals.models import Goal
 from goals.serializers import GoalCreateSerializer, GoalSerializer
 from goals.filters import GoalDateFilter
+from goals.permissions import UserPermissions
 
 
 class GoalCreateView(CreateAPIView):
@@ -38,7 +39,7 @@ class GoalListView(ListAPIView):
 class GoalView(RetrieveUpdateDestroyAPIView):
     model = Goal
     serializer_class = GoalSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated, UserPermissions]
 
     def get_queryset(self):
         return Goal.objects.filter(user=self.request.user, is_deleted=False)
