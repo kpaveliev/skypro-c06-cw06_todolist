@@ -24,7 +24,7 @@ class CommentListView(ListAPIView):
     ]
     ordering_fields = ["created"]
     ordering = ["-created"]
-    search_fields = ["goal__title"]
+    search_fields = ["goal"]
 
     def get_queryset(self):
         return Comment.objects.filter(
