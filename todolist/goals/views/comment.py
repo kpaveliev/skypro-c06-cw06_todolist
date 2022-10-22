@@ -1,3 +1,4 @@
+from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework import permissions, filters
 from rest_framework.pagination import LimitOffsetPagination
@@ -20,11 +21,11 @@ class CommentListView(ListAPIView):
     pagination_class = LimitOffsetPagination
     filter_backends = [
         filters.OrderingFilter,
-        filters.SearchFilter,
+        DjangoFilterBackend,
     ]
     ordering_fields = ["created"]
     ordering = ["-created"]
-    search_fields = ["goal__id"]
+    filterset_fields = ["goal"]
 
     def get_queryset(self):
         return Comment.objects.filter(
