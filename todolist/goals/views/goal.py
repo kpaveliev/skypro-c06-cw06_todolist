@@ -17,12 +17,15 @@ class GoalListView(ListAPIView):
     model = Goal
     permission_classes = [permissions.IsAuthenticated]
     serializer_class = GoalSerializer
+    pagination_class = LimitOffsetPagination
     filter_backends = [
         DjangoFilterBackend,
+        filters.OrderingFilter,
         filters.SearchFilter,
     ]
+    ordering_fields = ["title", "created"]
     filterset_class = GoalDateFilter
-    search_fields = ["title", "description", "category__title"]
+    search_fields = ["title", "description"]
 
     def get_queryset(self):
         return Goal.objects.filter(
