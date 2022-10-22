@@ -12,6 +12,15 @@ class CommentCreateSerializer(serializers.ModelSerializer):
         read_only_fields = ("id", "created", "updated", "user")
         fields = "__all__"
 
+    def validate_goal(self, value):
+        if value.is_deleted:
+            raise serializers.ValidationError("not allowed in deleted goal")
+
+        if value.user != self.context["request"].user:
+            raise serializers.ValidationError("not owner of the goal")
+
+        return value
+
 
 class CommentSerializer(serializers.ModelSerializer):
     user = RetrieveUpdateSerializer(read_only=True)
