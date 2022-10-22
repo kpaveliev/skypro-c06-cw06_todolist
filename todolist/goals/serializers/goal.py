@@ -27,6 +27,6 @@ class GoalSerializer(serializers.ModelSerializer):
     user = RetrieveUpdateSerializer(read_only=True)
 
     class Meta:
-        model = Category
+        model = Goal
         fields = "__all__"
         read_only_fields = ("id", "created", "updated", "user", "category", "description")
