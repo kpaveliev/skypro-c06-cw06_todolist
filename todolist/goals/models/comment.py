@@ -13,7 +13,6 @@ class Comment(models.Model):
     user = models.ForeignKey(User, verbose_name="Автор", on_delete=models.PROTECT)
     goal = models.ForeignKey(Goal, verbose_name="Цель", on_delete=models.CASCADE)
     text = models.CharField(verbose_name="Текст", max_length=1200)
-    is_deleted = models.BooleanField(verbose_name="Удален", default=False)
     created = models.DateTimeField(verbose_name="Дата создания")
     updated = models.DateTimeField(verbose_name="Дата последнего обновления")
 

@@ -38,8 +38,3 @@ class CommentView(RetrieveUpdateDestroyAPIView):
 
     def get_queryset(self):
         return Comment.objects.filter(user=self.request.user, is_deleted=False)
-
-    def perform_destroy(self, instance):
-        instance.is_deleted = True
-        instance.save()
-        return instance
