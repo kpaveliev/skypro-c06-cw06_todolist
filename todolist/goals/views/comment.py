@@ -24,12 +24,11 @@ class CommentListView(ListAPIView):
     ]
     ordering_fields = ["created"]
     ordering = ["-created"]
-    search_fields = ["goal"]
+    search_fields = ["goal__id"]
 
     def get_queryset(self):
         return Comment.objects.filter(
-            user=self.request.user, is_deleted=False
-        )
+            user=self.request.user)
 
 
 class CommentView(RetrieveUpdateDestroyAPIView):
@@ -38,4 +37,4 @@ class CommentView(RetrieveUpdateDestroyAPIView):
     permission_classes = [permissions.IsAuthenticated, UserPermissions]
 
     def get_queryset(self):
-        return Comment.objects.filter(user=self.request.user, is_deleted=False)
+        return Comment.objects.filter(user=self.request.user)
