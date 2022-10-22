@@ -1,7 +1,6 @@
 from rest_framework import serializers
 
 from goals.models import Goal
-from goals.models import Category
 from core.serializers import RetrieveUpdateSerializer
 
 

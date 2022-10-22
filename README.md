@@ -13,13 +13,18 @@ Backend for task-tracking application
 
 ### Features
 
-1. Authentication
+1. Authentication:
    - VK Oauth
    - basic django authentication
-2. User
+2. User:
    - profile update
    - password change
-3. Goals, categories
+3. Board interface:
+   - basic CRUD with filters and sorting: goals, categories, comments
+   - user can view only his items
+   - user can create goals only in his own categories, create comments only for his goals
+   - user can change, delete only his categories, goals, comments
+   - when category is marked as is_deleted, all child goals are also marked as is_deleted
 
 ## How to launch project in development environment
 
