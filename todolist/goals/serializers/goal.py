@@ -11,7 +11,7 @@ class GoalCreateSerializer(serializers.ModelSerializer):
     class Meta:
         model = Goal
         fields = "__all__"
-        read_only_fields = ("id", "created", "updated", "category", "description", "user")
+        read_only_fields = ("id", "created", "updated", "description", "user")
 
     def validate_category(self, value):
         if value.is_deleted:
