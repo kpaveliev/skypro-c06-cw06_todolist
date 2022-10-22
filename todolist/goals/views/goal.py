@@ -24,8 +24,8 @@ class GoalListView(ListAPIView):
         filters.OrderingFilter,
         filters.SearchFilter,
     ]
-    ordering_fields = ["title", "created"]
-    ordering = ["title"]
+    ordering_fields = ["title", "created", "priority", "due_date"]
+    ordering = ["priority", "due_date", "title"]
     filterset_class = GoalDateFilter
     search_fields = ["title", "description"]
 
