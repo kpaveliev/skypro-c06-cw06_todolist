@@ -16,7 +16,7 @@ class CategoryCreateView(CreateAPIView):
 
 class CategoryListView(ListAPIView):
     model = Category
-    permission_classes = [permissions.IsAuthenticated, CategoryPermissions]
+    permission_classes = [CategoryPermissions]
     serializer_class = CategorySerializer
     pagination_class = LimitOffsetPagination
     filter_backends = [
@@ -38,7 +38,7 @@ class CategoryListView(ListAPIView):
 class CategoryView(RetrieveUpdateDestroyAPIView):
     model = Category
     serializer_class = CategorySerializer
-    permission_classes = [permissions.IsAuthenticated, CategoryPermissions]
+    permission_classes = [CategoryPermissions]
 
     def get_queryset(self):
         return Category.objects.filter(
