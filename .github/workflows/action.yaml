@@ -2,9 +2,7 @@ name: Build and deploy workflow
 on:
   push:
     branches:
-#      - boards
-  pull_request:
-    branches:
+      - boards
       - main
 jobs:
   build_and_push:
