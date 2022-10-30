@@ -16,6 +16,20 @@ class BoardPermissions(permissions.BasePermission):
         ).exists()
 
 
+class CategoryPermissions(permissions.BasePermission):
+    def has_object_permission(self, request, view, obj):
+        if not request.user.is_authenticated:
+            return False
+        if request.method in permissions.SAFE_METHODS:
+            return Category.objects.filter(
+                board__participants__user=request.user
+            ).exists()
+        return Category.objects.filter(
+            board__participants__user=request.user,
+            board__participants__role__in=[BoardParticipant.Role.owner, BoardParticipant.Role.writer],
+        ).exists()
+
+
 class UserPermissions(permissions.BasePermission):
 
     def has_object_permission(self, request, view, obj):
