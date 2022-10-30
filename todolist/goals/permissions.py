@@ -18,12 +18,6 @@ class BoardPermissions(permissions.BasePermission):
                 board=obj
             ).exists()
 
-        print(BoardParticipant.objects.filter(
-            user=request.user,
-            board=obj,
-            role__in=self.roles
-        ).exists())
-
         return BoardParticipant.objects.filter(
             user=request.user,
             board=obj,
@@ -35,14 +29,14 @@ class CategoryPermissions(BoardPermissions):
     roles = [BoardParticipant.Role.owner, BoardParticipant.Role.writer]
 
     def has_object_permission(self, request, view, obj):
-        super().has_object_permission(request, view, obj=obj.board)
+        return super().has_object_permission(request, view, obj=obj.board)
 
 
 class GoalPermissions(BoardPermissions):
     roles = [BoardParticipant.Role.owner, BoardParticipant.Role.writer]
 
     def has_object_permission(self, request, view, obj):
-        super().has_object_permission(request, view, obj=obj.category.board)
+        return super().has_object_permission(request, view, obj=obj.category.board)
 
 
 class UserPermissions(permissions.BasePermission):
