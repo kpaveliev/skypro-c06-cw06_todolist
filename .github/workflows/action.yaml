@@ -1,10 +1,12 @@
 name: Build and deploy workflow
+description: Automatic deploy on server - front, back, db
 on:
   push:
     branches:
+      - boards
+  pull_request:
+    branches:
       - main
-#      - goals_app
-#      - boards
 jobs:
   build_and_push:
     runs-on: ubuntu-latest
