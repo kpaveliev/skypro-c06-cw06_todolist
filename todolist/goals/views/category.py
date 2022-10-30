@@ -1,6 +1,7 @@
 from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveUpdateDestroyAPIView
 from rest_framework import permissions, filters
 from rest_framework.pagination import LimitOffsetPagination
+from django_filters.rest_framework import DjangoFilterBackend
 
 from goals.models import Category, Goal
 from goals.serializers import CategoryCreateSerializer, CategorySerializer
@@ -21,10 +22,12 @@ class CategoryListView(ListAPIView):
     filter_backends = [
         filters.OrderingFilter,
         filters.SearchFilter,
+        DjangoFilterBackend,
     ]
     ordering_fields = ["title", "created"]
     ordering = ["title"]
     search_fields = ["title"]
+    filterset_fields = ["board", "user"]
 
     def get_queryset(self):
         return Category.objects.filter(
