@@ -3,7 +3,7 @@ version: '3.8'
 services:
 
   frontend:
-    image: sermalenk/skypro-front:lesson-34
+    image: sermalenk/skypro-front:lesson-36
     ports:
       - "80:80"
     depends_on:
@@ -19,8 +19,6 @@ services:
         condition: service_completed_successfully
       db:
         condition: service_healthy
-    ports:
-      - "8000:8000"
     volumes:
       - ./.env:/code/.env
     networks:
@@ -50,8 +48,6 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       POSTGRES_DB: ${DB_NAME}
     restart: always
-    ports:
-      - "${DB_PORT}:${DB_PORT}"
     networks:
       - avito_db_network
     healthcheck:

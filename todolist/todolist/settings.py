@@ -49,7 +49,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'social_django',
+    'django_filters',
     'core',
+    'goals',
     'drf_spectacular',
 ]
 
@@ -127,6 +129,10 @@ SOCIAL_AUTH_VK_OAUTH2_KEY = env('VK_OAUTH2_KEY')
 SOCIAL_AUTH_VK_OAUTH2_SECRET = env('VK_OAUTH2_SECRET')
 SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/logged-in/'
 SOCIAL_AUTH_LOGIN_ERROR_URL = '/login-error/'
+SOCIAL_AUTH_VK_OAUTH2_SCOPE = ['email']
+SOCIAL_AUTH_VK_EXTRA_DATA = [
+    ('email', 'email'),
+]
 
 AUTHENTICATION_BACKENDS = (
     'social_core.backends.vk.VKOAuth2',
