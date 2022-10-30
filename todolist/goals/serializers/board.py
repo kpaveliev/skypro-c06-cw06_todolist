@@ -23,6 +23,12 @@ class BoardCreateSerializer(serializers.ModelSerializer):
         return board
 
 
+class BoardListSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Board
+        fields = "__all__"
+
+
 class BoardParticipantSerializer(serializers.ModelSerializer):
     role = serializers.ChoiceField(
         required=True, choices=BoardParticipant.Role
