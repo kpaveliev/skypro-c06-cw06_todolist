@@ -1,5 +1,4 @@
 name: Build and deploy workflow
-description: Automatic deploy on server - front, back, db
 on:
   push:
     branches:
