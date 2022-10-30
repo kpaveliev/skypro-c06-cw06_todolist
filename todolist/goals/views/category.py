@@ -7,7 +7,6 @@ from goals.serializers import CategoryCreateSerializer, CategorySerializer
 from goals.permissions import UserPermissions
 
 
-
 class CategoryCreateView(CreateAPIView):
     model = Category
     permission_classes = [permissions.IsAuthenticated]
@@ -29,7 +28,7 @@ class CategoryListView(ListAPIView):
 
     def get_queryset(self):
         return Category.objects.filter(
-            user=self.request.user, is_deleted=False
+            participants__user=self.request.user, is_deleted=False
         )
 
 
@@ -39,7 +38,9 @@ class CategoryView(RetrieveUpdateDestroyAPIView):
     permission_classes = [permissions.IsAuthenticated, UserPermissions]
 
     def get_queryset(self):
-        return Category.objects.filter(user=self.request.user, is_deleted=False)
+        return Category.objects.filter(
+            participants__user=self.request.user, is_deleted=False
+        )
 
     def perform_destroy(self, instance):
         instance.is_deleted = True
