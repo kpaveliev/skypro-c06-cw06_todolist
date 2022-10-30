@@ -39,7 +39,7 @@ class GoalPermissions(BoardPermissions):
         return super().has_object_permission(request, view, obj=obj.category.board)
 
 
-class UserPermissions(permissions.BasePermission):
+class CommentPermissions(permissions.BasePermission):
 
     def has_object_permission(self, request, view, obj):
         if not request.user.is_authenticated:
