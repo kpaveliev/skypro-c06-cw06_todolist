@@ -28,7 +28,7 @@ class CategoryListView(ListAPIView):
 
     def get_queryset(self):
         return Category.objects.filter(
-            user__participants__user=self.request.user, is_deleted=False
+            board__participants__user=self.request.user, is_deleted=False
         )
 
 
@@ -39,7 +39,7 @@ class CategoryView(RetrieveUpdateDestroyAPIView):
 
     def get_queryset(self):
         return Category.objects.filter(
-            user__participants__user=self.request.user, is_deleted=False
+            board__participants__user=self.request.user, is_deleted=False
         )
 
     def perform_destroy(self, instance):
