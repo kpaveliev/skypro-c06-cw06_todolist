@@ -20,11 +20,12 @@ Backend for task-tracking application
    - profile update
    - password change
 3. Board interface:
-   - basic CRUD with filters and sorting: goals, categories, comments
-   - user can view only his items
-   - user can create goals only in his own categories, create comments only for his goals
-   - user can change, delete only his categories, goals, comments
-   - when category is marked as is_deleted, all child goals are also marked as is_deleted
+   - basic CRUD with filters and sorting: boards, goals, categories, comments
+   - user can view items related to the boards he's member of (owner, writer or reader)
+   - user can create categories, goals, comments only if he's owner/writer of the related board
+   - user can update, delete only if he's owner/writer of the related board
+   - user can update, delete only his comments
+   - when board, category is marked as is_deleted, all child categoris, goals are also marked as is_deleted
 
 ## How to launch project in development environment
 
