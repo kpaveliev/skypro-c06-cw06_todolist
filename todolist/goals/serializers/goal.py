@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from goals.models import Goal
+from goals.models import Goal, BoardParticipant
 from core.serializers import RetrieveUpdateSerializer
 
 
@@ -16,8 +16,11 @@ class GoalCreateSerializer(serializers.ModelSerializer):
         if value.is_deleted:
             raise serializers.ValidationError("not allowed in deleted category")
 
-        if value.user != self.context["request"].user:
-            raise serializers.ValidationError("not owner of category")
+        user = value.board.participants.filter(user=self.context["request"].user).first()
+        if not user:
+            raise serializers.ValidationError("not owner or writer in the related board")
+        elif user.role not in [BoardParticipant.Role.owner, BoardParticipant.Role.writer]:
+            raise serializers.ValidationError("not owner or writer in the related board")
 
         return value
 

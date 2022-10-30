@@ -16,8 +16,10 @@ class CategoryCreateSerializer(serializers.ModelSerializer):
         if value.is_deleted:
             raise serializers.ValidationError("not allowed in deleted board")
 
-        user = value.participants.get(user=self.context["request"].user)
-        if user.role not in [BoardParticipant.Role.owner, BoardParticipant.Role.writer]:
+        user = value.participants.filter(user=self.context["request"].user).first()
+        if not user:
+            raise serializers.ValidationError("not owner or writer of the board")
+        elif user.role not in [BoardParticipant.Role.owner, BoardParticipant.Role.writer]:
             raise serializers.ValidationError("not owner or writer of the board")
 
         return value
