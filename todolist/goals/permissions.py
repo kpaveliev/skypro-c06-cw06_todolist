@@ -3,15 +3,10 @@ from rest_framework import permissions
 from goals.models import BoardParticipant
 
 
-class BoardPermissions(permissions.BasePermission):
-
-    roles = [BoardParticipant.Role.owner]
+class BasePermissionMixin(permissions.IsAuthenticated):
+    roles = [BoardParticipant.Role.owner, BoardParticipant.Role.writer]
 
     def has_object_permission(self, request, view, obj):
-
-        if not request.user.is_authenticated:
-            return False
-
         if request.method in permissions.SAFE_METHODS:
             return BoardParticipant.objects.filter(
                 user=request.user,
@@ -25,24 +20,23 @@ class BoardPermissions(permissions.BasePermission):
         ).exists()
 
 
-class CategoryPermissions(BoardPermissions):
-    roles = [BoardParticipant.Role.owner, BoardParticipant.Role.writer]
+class BoardPermissions(BasePermissionMixin):
+    roles = [BoardParticipant.Role.owner]
 
+    def has_object_permission(self, request, view, obj):
+        return super().has_object_permission(request, view, obj=obj)
+
+
+class CategoryPermissions(BasePermissionMixin):
     def has_object_permission(self, request, view, obj):
         return super().has_object_permission(request, view, obj=obj.board)
 
 
-class GoalPermissions(BoardPermissions):
-    roles = [BoardParticipant.Role.owner, BoardParticipant.Role.writer]
-
+class GoalPermissions(BasePermissionMixin):
     def has_object_permission(self, request, view, obj):
         return super().has_object_permission(request, view, obj=obj.category.board)
 
 
-class CommentPermissions(permissions.BasePermission):
-
+class CommentPermissions(permissions.IsAuthenticated):
     def has_object_permission(self, request, view, obj):
-        if not request.user.is_authenticated:
-            return False
-        else:
-            return obj.user == request.user
+        return obj.user == request.user
