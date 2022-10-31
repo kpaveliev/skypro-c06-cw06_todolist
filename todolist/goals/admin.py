@@ -3,28 +3,29 @@ from django.contrib import admin
 from goals.models import Category, Goal, Comment, Board
 
 
-class CategoryAdmin(admin.ModelAdmin):
+class BaseAdmin(admin.ModelAdmin):
     list_display = ("title", "user", "created", "updated")
     search_fields = ("title", "user")
     readonly_fields = ("created", "updated")
 
 
-class GoalAdmin(admin.ModelAdmin):
+class CategoryAdmin(BaseAdmin):
+    pass
+
+
+class GoalAdmin(BaseAdmin):
     list_display = ("title", "user", "category", "created", "updated")
     search_fields = ("title", "user", "category")
-    readonly_fields = ("created", "updated")
 
 
-class CommentAdmin(admin.ModelAdmin):
+class CommentAdmin(BaseAdmin):
     list_display = ("goal", "user", "created", "updated")
     search_fields = ("goal", "user", "text")
-    readonly_fields = ("created", "updated")
 
 
-class BoardAdmin(admin.ModelAdmin):
+class BoardAdmin(BaseAdmin):
     list_display = ("title", "created", "updated")
     search_fields = ("title",)
-    readonly_fields = ("created", "updated")
 
 
 admin.site.register(Category, CategoryAdmin)
