@@ -2,7 +2,8 @@ name: Build and deploy workflow
 on:
   push:
     branches:
-#      - 'goals_app'
+      - boards
+      - main
 jobs:
   build_and_push:
     runs-on: ubuntu-latest
