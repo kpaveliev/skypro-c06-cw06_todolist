@@ -1,3 +1,5 @@
 from django.contrib import admin
 
-# Register your models here.
+class BotAdmin(admin.ModelAdmin):
+    list_display = ("tg_user_id", "tg_chat_id", "user")
+    search_fields = ("tg_user_id", "tg_chat_id", "user")
