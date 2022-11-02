@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'django_filters',
     'core',
     'goals',
+    'bot',
     'drf_spectacular',
 ]
 
