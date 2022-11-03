@@ -8,9 +8,9 @@ from marshmallow import EXCLUDE
 class MessageFrom:
     """Telegram API: https://core.telegram.org/bots/api#user"""
     id: int
-    first_name: str
-    last_name: str
-    username: str
+    first_name: Optional[str] = field(default=None)
+    last_name: Optional[str] = field(default=None)
+    username: Optional[str] = field(default=None)
 
     class Meta:
         unknown = EXCLUDE
@@ -21,9 +21,9 @@ class Chat:
     """Telegram API: https://core.telegram.org/bots/api#chat"""
     id: int
     type: str
-    first_name: str
-    last_name: str
-    username: str
+    first_name: Optional[str] = field(default=None)
+    last_name: Optional[str] = field(default=None)
+    username: Optional[str] = field(default=None)
     title: Optional[str] = field(default=None)
 
     class Meta:
@@ -34,9 +34,10 @@ class Chat:
 class Message:
     """Telegram API: https://core.telegram.org/bots/api#message"""
     message_id: int
-    from_: MessageFrom = field(metadata=dict(data_key='from'))  # to override usage of keyword "from"
     chat: Chat
-    text: str
+    # override usage of keyword "from" - add underscore and metadata to map to data key
+    from_: Optional[MessageFrom] = field(metadata=dict(data_key='from'), default=None)
+    text: Optional[str] = field(default=None)
 
     class Meta:
         unknown = EXCLUDE
@@ -46,7 +47,7 @@ class Message:
 class UpdateObj:
     """Telegram API: https://core.telegram.org/bots/api#getting-updates"""
     update_id: int
-    message: Message
+    message: Optional[Message] = field(default=None)
 
     class Meta:
         unknown = EXCLUDE

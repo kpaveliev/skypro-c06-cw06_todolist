@@ -22,18 +22,35 @@ class TgClient:
         }
         headers = {
             "accept": "application/json",
+            "User-Agent": "Django application",
             "content-type": "application/json"
         }
         response = requests.get(url=url, headers=headers, params=params)
 
-        GetUpdatesSchema = class_schema(GetUpdatesResponse)
+        Schema = class_schema(GetUpdatesResponse)
 
-        return GetUpdatesSchema().load(response.json())
+        return Schema().load(response.json())
 
     def send_message(self, chat_id: int, text: str) -> SendMessageResponse:
-        pass
+        url = self.get_url('sendMessage')
+
+        payload = {
+            "text": text,
+            "chat_id": chat_id
+        }
+        headers = {
+            "accept": "application/json",
+            "User-Agent": "Django application",
+            "content-type": "application/json"
+        }
+        response = requests.post(url=url, headers=headers, json=payload)
+
+        Schema = class_schema(SendMessageResponse)
+
+        return Schema().load(response.json())
 
 
 if __name__ == '__main__':
     cl = TgClient('5677342297:AAHOFv46hV1rbRxgNPjQLhkOUSQ6rXvGl-A')
     print(cl.get_updates(offset=0, timeout=5))
+    print(cl.send_message(chat_id=181467813, text="hello"))
