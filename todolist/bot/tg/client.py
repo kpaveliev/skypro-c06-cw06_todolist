@@ -27,9 +27,7 @@ class TgClient:
         }
         response = requests.get(url=url, headers=headers, params=params)
 
-        Schema = class_schema(GetUpdatesResponse)
-
-        return Schema().load(response.json())
+        return GetUpdatesResponse.Schema().load(response.json())
 
     def send_message(self, chat_id: int, text: str) -> SendMessageResponse:
         url = self.get_url('sendMessage')
@@ -45,9 +43,7 @@ class TgClient:
         }
         response = requests.post(url=url, headers=headers, json=payload)
 
-        Schema = class_schema(SendMessageResponse)
-
-        return Schema().load(response.json())
+        return SendMessageResponse.Schema().load(response.json())
 
 
 if __name__ == '__main__':

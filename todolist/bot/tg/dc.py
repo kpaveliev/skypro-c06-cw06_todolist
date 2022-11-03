@@ -1,6 +1,7 @@
-from dataclasses import dataclass, field
+from dataclasses import field
 from typing import List, Optional
 
+from marshmallow_dataclass import dataclass
 from marshmallow import EXCLUDE
 
 
