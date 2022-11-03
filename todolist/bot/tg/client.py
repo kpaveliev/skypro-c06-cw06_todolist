@@ -1,7 +1,9 @@
 import requests
 
+from marshmallow_dataclass import class_schema
+
 from dc import GetUpdatesResponse, SendMessageResponse
-# from schemas import GetUpdatesSchema, SendMessageSchema
+
 
 
 class TgClient:
@@ -24,7 +26,9 @@ class TgClient:
         }
         response = requests.get(url=url, headers=headers, params=params)
 
-        return GetUpdatesResponse(**response.json())
+        GetUpdatesSchema = class_schema(GetUpdatesResponse)
+
+        return GetUpdatesSchema().load(response.json())
 
     def send_message(self, chat_id: int, text: str) -> SendMessageResponse:
         pass

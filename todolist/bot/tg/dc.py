@@ -1,5 +1,5 @@
-from dataclasses import dataclass
-from typing import List
+from dataclasses import dataclass, field
+from typing import List, Optional
 
 from marshmallow import EXCLUDE
 
@@ -24,7 +24,7 @@ class Chat:
     first_name: str
     last_name: str
     username: str
-    title: str
+    title: Optional[str] = field(default=None)
 
     class Meta:
         unknown = EXCLUDE
@@ -33,8 +33,8 @@ class Chat:
 @dataclass
 class Message:
     """Telegram API: https://core.telegram.org/bots/api#message"""
-    message_id: id
-    from_: MessageFrom  # "from" in Telegram API, underscore added
+    message_id: int
+    from_: MessageFrom = field(metadata=dict(data_key='from'))  # to override usage of keyword "from"
     chat: Chat
     text: str
 
@@ -47,7 +47,6 @@ class UpdateObj:
     """Telegram API: https://core.telegram.org/bots/api#getting-updates"""
     update_id: int
     message: Message
-    sender_chat: Chat
 
     class Meta:
         unknown = EXCLUDE
