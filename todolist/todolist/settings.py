@@ -175,5 +175,9 @@ SPECTACULAR_SETTINGS = {
     'VERSION': '1.0.0',
 }
 
+# Telegram Bot
+
+TG_TOKEN = env('TG_TOKEN')
+
 
 

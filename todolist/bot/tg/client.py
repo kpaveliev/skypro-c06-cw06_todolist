@@ -2,8 +2,7 @@ import requests
 
 from marshmallow_dataclass import class_schema
 
-from dc import GetUpdatesResponse, SendMessageResponse
-
+from ._dc import GetUpdatesResponse, SendMessageResponse
 
 
 class TgClient:
