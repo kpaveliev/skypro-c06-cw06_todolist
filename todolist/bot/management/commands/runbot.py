@@ -3,7 +3,7 @@ from random import randint
 from django.core.management import BaseCommand
 
 from todolist.settings import TG_TOKEN
-from goals.models import Goal, Category
+from goals.models import Goal, Category, BoardParticipant
 from bot.models import TgUser
 from bot.tg import TgClient
 from bot.tg._dc import GetUpdatesResponse
@@ -20,7 +20,7 @@ class Command(BaseCommand):
         self.tg_user_id: int
         self.message: str
 
-        self.user: TgUser
+        self.user: TgUser = None
         self.tg_user: TgUser
         self.category: Category
         self.goal: Goal
@@ -36,7 +36,7 @@ class Command(BaseCommand):
             if self.user:
                 reply = self._main_logic()
             else:
-                reply = self._verify
+                reply = self._verify()
 
             self._send_reply(reply=reply)
 
@@ -57,21 +57,22 @@ class Command(BaseCommand):
 
     def _main_logic(self) -> str:
         """Logic for verified user"""
-        # key commands
+        # logic for goal creation - choose category, create goal
         if self.message == '/cancel':
             self.category_mode = False
             self.goal_mode = False
             reply = f'Операция прервана, введите название задачи'
+        elif self.category_mode:
+            reply = self._choose_category()
+        elif self.goal_mode:
+            reply = self._create_goal()
+
+        # key commands
         elif self.message == '/goals':
             reply = self._goals()
         elif self.message == '/create':
             reply = self._create()
 
-        # logic for goal creation - choose category, create goal
-        elif self.category_mode:
-            reply = self._choose_category()
-        elif self.goal_mode:
-            reply = self._create_goal()
         else:
             reply = 'Неизвестная команда'
 
@@ -102,29 +103,40 @@ class Command(BaseCommand):
         goals = Goal.objects.filter(
             category__board__participants__user=self.user.user, is_deleted=False
         ).all()
-        return [f'#{goal.id} {goal.title}' for goal in goals]
+        prefix = ['Cписок ваших целейй:']
+        reply = [f'#{goal.id} {goal.title}' for goal in goals]
+        return prefix + reply
 
     def _create(self) -> list:
         """Logic for /create command - list of categories"""
         categories = Category.objects.filter(
-            board__participants__user=self.user.user, is_deleted=False
+            board__participants__user=self.user.user,
+            board__participants__role__in=[BoardParticipant.Role.owner, BoardParticipant.Role.writer],
+            is_deleted=False
         ).all()
-
         self.category_mode = True
-
-        return [f'#{category.id} {category.title}' for category in categories]
+        prefix = ['Введите номер категории зи списка доступных:']
+        reply = [f'#{category.id} {category.title}' for category in categories]
+        return prefix + reply
 
     def _choose_category(self) -> str:
         """Logic for /create command - choose category"""
 
+        if not self.message.isnumeric():
+            return f'Выбрана неверная категория'
+
         self.category = Category.objects.filter(
-            pk=int(self.message), board__participants__user=self.user.user, is_deleted=False
+            pk=self.message,
+            board__participants__user=self.user.user,
+            board__participants__role__in=[BoardParticipant.Role.owner, BoardParticipant.Role.writer],
+            is_deleted=False
         ).first()
 
         if not self.category:
-            reply = f'Неверная категория'
+            reply = f'Выбрана неверная категория'
         else:
-            reply = f'Категория выбрана. Пришлите название задачи'
+            reply = (f'Выбрана категория {self.category.title}. '
+                     f'Введите цель')
             self.goal_mode = True
             self.category_mode = False
 
@@ -136,7 +148,7 @@ class Command(BaseCommand):
             user=self.user.user, title=self.message, category=self.category
         )
         self.goal_mode = False
-        return f'Задача "{self.goal.title}" создана'
+        return f'Цель "{self.goal.title}" создана'
 
     def _send_reply(self, reply: str | list) -> None:
         """Send reply"""
