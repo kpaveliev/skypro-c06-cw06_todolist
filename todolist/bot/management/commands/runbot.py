@@ -61,7 +61,7 @@ class Command(BaseCommand):
         if self.message == '/cancel':
             self.category_mode = False
             self.goal_mode = False
-            reply = f'Операция прервана, введите название задачи'
+            reply = f'Операция прервана, введите команду'
         elif self.category_mode:
             reply = self._choose_category()
         elif self.goal_mode:
