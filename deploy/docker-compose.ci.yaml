@@ -10,7 +10,8 @@ services:
       - db
       - api
     networks:
-      - avito_front_network
+      - todolist_front_network
+
 
   api:
     image: kpaveliev/skypro-c06-cw06-todolist:${GITHUB_REF_NAME}-${GITHUB_RUN_ID}
@@ -22,9 +23,8 @@ services:
     volumes:
       - ./.env:/code/.env
     networks:
-      - avito_front_network
-      - avito_db_network
-
+      - todolist_front_network
+      - todolist_db_network
 
   migrations:
     image: kpaveliev/skypro-c06-cw06-todolist:${GITHUB_REF_NAME}-${GITHUB_RUN_ID}
@@ -34,9 +34,23 @@ services:
     volumes:
       - ./.env:/code/.env
     networks:
-      - avito_db_network
+      - todolist_db_network
     command: >
       sh -c "python manage.py migrate"
+
+  bot:
+    image: kpaveliev/skypro-c06-cw06-todolist:${GITHUB_REF_NAME}-${GITHUB_RUN_ID}
+    depends_on:
+      migrations:
+        condition: service_completed_successfully
+      db:
+        condition: service_healthy
+    volumes:
+      - ./.env:/code/.env
+    networks:
+      - todolist_db_network
+    command: >
+      sh -c "python manage.py runbot"
 
 
   db:
@@ -49,7 +63,7 @@ services:
       POSTGRES_DB: ${DB_NAME}
     restart: always
     networks:
-      - avito_db_network
+      - todolist_db_network
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}" ]
       interval: 5s
@@ -62,5 +76,5 @@ volumes:
 
 
 networks:
-  avito_db_network:
-  avito_front_network:
+  todolist_db_network:
+  todolist_front_network:
