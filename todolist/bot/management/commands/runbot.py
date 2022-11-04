@@ -26,7 +26,7 @@ class Command(BaseCommand):
                         goals = self._get_goals(user.user)
                         tg_client.send_message(chat_id=item.message.chat.id, text=goals)
                     else:
-                        tg_client.send_message(chat_id=item.message.chat.id, text='Авторизован')
+                        tg_client.send_message(chat_id=item.message.chat.id, text='Неизвестная команда')
                 elif TgUser.objects.filter(tg_user_id=item.message.from_.id).first():
                     tg_client.send_message(chat_id=item.message.chat.id, text='Существует')
 
