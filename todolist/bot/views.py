@@ -1,3 +1,11 @@
-from django.shortcuts import render
+from rest_framework import permissions
+from rest_framework.generics import UpdateAPIView
 
-# Create your views here.
+from .models import TgUser
+from .serializers import TgUserUpdateSerializer
+
+
+class TgUserUpdateView(UpdateAPIView):
+    model = TgUser
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = TgUserUpdateSerializer
