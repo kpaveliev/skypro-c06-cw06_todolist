@@ -28,6 +28,7 @@ Backend for task-tracking application
 3. Telegram bot (bot app):
    - user need to verify identity using verification code
    - user could view and create goals
+   - bot telegram username: @TodolistT1000Bot
 
 ## How to launch project in development environment
 
