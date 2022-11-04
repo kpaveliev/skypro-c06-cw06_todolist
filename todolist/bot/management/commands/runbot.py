@@ -17,7 +17,7 @@ class Command(BaseCommand):
 
         while True:
             response = tg_client.get_updates(offset=offset)
-            print(response.status)
+
             for item in response.result:
                 offset = item.update_id + 1
 

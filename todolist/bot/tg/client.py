@@ -23,6 +23,7 @@ class TgClient:
             "content-type": "application/json"
         }
         response = requests.get(url=url, headers=headers, params=params)
+        print(response.status_code)
 
         return GetUpdatesResponse.Schema().load(response.json())
 
