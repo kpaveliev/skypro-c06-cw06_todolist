@@ -2,7 +2,7 @@ name: Build and deploy workflow
 on:
   push:
     branches:
-      - telegram
+#      - telegram
       - main
 jobs:
   build_and_push:

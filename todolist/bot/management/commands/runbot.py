@@ -21,35 +21,39 @@ class Command(BaseCommand):
             for item in response.result:
                 offset = item.update_id + 1
 
-                user = TgUser.objects.filter(tg_user_id=item.message.from_.id,  user_id__isnull=False).first()
+                chat_id = item.message.chat.id
+                tg_user_id = item.message.from_.id
+                message = item.message.text
+
+                user = TgUser.objects.filter(
+                    tg_user_id=tg_user_id, user_id__isnull=False
+                ).first().user()
+
+                # logic for verified user
                 if user:
-                    if item.message.text == '/goals':
-                        goals = self._get_goals(user.user)
-                        tg_client.send_message(chat_id=item.message.chat.id, text=goals)
+                    if message == '/goals':
+                        goals = Goal.objects.filter(user=user).all()
+                        for goal in goals:
+                            reply = f'#{goal.id} {goal.title}'
+                            tg_client.send_message(chat_id=chat_id, text=reply)
                     else:
-                        tg_client.send_message(chat_id=item.message.chat.id, text='Неизвестная команда')
-                elif TgUser.objects.filter(tg_user_id=item.message.from_.id).first():
-                    tg_client.send_message(chat_id=item.message.chat.id, text='Существует')
+                        tg_client.send_message(chat_id=chat_id, text='Неизвестная команда')
 
+                # logic for not verified user
                 else:
-                    verification_code = self._create_object(item.message.chat.id, item.message.from_.id)
-                    text = (f"Подтвердите, пожалуйста, свой аккаунт. "
-                            f"Для подтверждения необходимо ввести код: {verification_code} "
-                            f"на сайте")
-                    tg_client.send_message(chat_id=item.message.chat.id, text=text)
+                    verification_code = randint(10000, 99999)
+                    tg_user = TgUser.objects.filter(tg_user_id=tg_user_id).first()
 
-    @staticmethod
-    def _create_object(chat_id, tg_user_id) -> int:
-        """Generate verification code and create user"""
-        verification_code = randint(10000, 99999)
-        TgUser.objects.create(
-            tg_user_id=tg_user_id, tg_chat_id=chat_id, verification_code=verification_code
-        )
-        return verification_code
+                    if not tg_user:
+                        TgUser.objects.create(
+                            tg_user_id=tg_user_id, tg_chat_id=chat_id, verification_code=verification_code
+                        )
+                    else:
+                        tg_user.verification_code = verification_code
+                        tg_user.save()
 
-    @staticmethod
-    def _get_goals(user) -> str:
-        """Get list of user goals"""
-        goal_objects = Goal.objects.filter(user=user).all()
-        goals = '\n'.join([goal.title for goal in goal_objects])
-        return goals
+                    reply = (f"Подтвердите, пожалуйста, свой аккаунт. "
+                             f"Для подтверждения необходимо ввести код: {verification_code} "
+                             f"на сайте")
+                    tg_client.send_message(chat_id=item.message.chat.id, text=reply)
+
