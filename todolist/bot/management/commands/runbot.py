@@ -1,5 +1,4 @@
 from random import randint
-from typing import Optional
 
 from django.core.management import BaseCommand
 
@@ -22,6 +21,7 @@ class Command(BaseCommand):
         self.message: str
 
         self.user: TgUser
+        self.tg_user: TgUser
         self.category: Category
         self.goal: Goal
 
@@ -31,92 +31,117 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         while True:
-            self.response = self.tg_client.get_updates(offset=self.offset)
+            self._get_response()
 
-            for item in self.response.result:
-                self.offset = item.update_id + 1
+            if self.user:
+                reply = self._main_logic()
+            else:
+                reply = self._verify
 
-                # get key data
-                self.chat_id = item.message.chat.id
-                self.tg_user_id = item.message.from_.id
-                self.message = item.message.text
+            self._send_reply(reply=reply)
 
-                self.user = TgUser.filter(
-                    tg_user_id=self.tg_user_id, user_id__isnull=False
-                ).first()
+    def _get_response(self) -> None:
+        """Get key data from response"""
+        # get key data from response
+        self.response = self.tg_client.get_updates(offset=self.offset)
 
-                # logic for goal creation - chose category
-                if self.message == '/cancel':
-                    self.category_mode = False
-                    self.goal_mode = False
-                    reply = f'Операция прервана, введите название задачи'
-                    self.tg_client.send_message(chat_id=self.chat_id, text=reply)
+        for item in self.response.result:
+            self.offset = item.update_id + 1
+            self.chat_id = item.message.chat.id
+            self.tg_user_id = item.message.from_.id
+            self.message = item.message.text
 
-                if self.category_mode:
-                    self.category = Category.objects.filter(
-                            pk=int(self.message), board__participants__user=self.user.user, is_deleted=False
-                        ).first()
-                    if not self.category:
-                        reply = f'Неверная категория'
-                    else:
-                        reply = f'Категория выбрана. Пришлите название задачи'
-                        self.goal_mode = True
-                        self.category_mode = False
+            self.user = TgUser.objects.filter(
+                tg_user_id=self.tg_user_id, user_id__isnull=False
+            ).first()
 
-                    self.tg_client.send_message(chat_id=self.chat_id, text=reply)
-                    continue
+    def _main_logic(self) -> str:
+        """Logic for verified user"""
+        # key commands
+        if self.message == '/cancel':
+            self.category_mode = False
+            self.goal_mode = False
+            reply = f'Операция прервана, введите название задачи'
+        elif self.message == '/goals':
+            reply = self._goals()
+        elif self.message == '/create':
+            reply = self._create()
 
-                # logic for goal creation - type goal
-                if self.goal_mode:
-                    self.goal = Goal.objects.create(
-                        user=self.user.user, title=self.message, category=category
-                    )
-                    self.goal_mode = False
-                    reply = f'Задача "{goal.title}" создана'
-                    self.tg_client.send_message(chat_id=self.chat_id, text=reply)
-                    continue
+        # logic for goal creation - choose category, create goal
+        elif self.category_mode:
+            reply = self._choose_category()
+        elif self.goal_mode:
+            reply = self._create_goal()
+        else:
+            reply = 'Неизвестная команда'
 
-                # main logic for verified user
-                if self.user:
-                    if self.message == '/goals':
-                        goals = Goal.objects.filter(
-                            category__board__participants__user=self.user.user, is_deleted=False
-                        ).all()
-                        for goal in goals:
-                            reply = f'#{goal.id} {goal.title}'
-                            self.tg_client.send_message(chat_id=self.chat_id, text=reply)
-                    if self.message == '/create':
-                        categories = Category.objects.filter(
-                            board__participants__user=self.user.user, is_deleted=False
-                        ).all()
-                        for category in categories:
-                            reply = f'#{category.id} {category.title}'
-                            self.tg_client.send_message(chat_id=self.chat_id, text=reply)
-                        reply = 'Введите номер категории'
-                        self.tg_client.send_message(chat_id=self.chat_id, text=reply)
-                        self.category_mode = True
-                    else:
-                        self.tg_client.send_message(chat_id=self.chat_id, text='Неизвестная команда')
+        return reply
 
-                # logic for not verified user
-                else:
-                    verification_code = randint(10000, 99999)
-                    tg_user = TgUser.objects.filter(tg_user_id=self.tg_user_id).first()
+    def _verify(self) -> str:
+        """Starting logic"""
+        verification_code = randint(10000, 99999)
 
-                    if not tg_user:
-                        TgUser.objects.create(
-                            tg_user_id=self.tg_user_id, tg_chat_id=self.chat_id, verification_code=verification_code
-                        )
-                    else:
-                        tg_user.verification_code = verification_code
-                        tg_user.save()
+        self.tg_user = TgUser.objects.filter(tg_user_id=self.tg_user_id).first()
+        if not self.tg_user:
+            TgUser.objects.create(
+                tg_user_id=self.tg_user_id,
+                tg_chat_id=self.chat_id,
+                verification_code=verification_code
+            )
+        else:
+            self.tg_user.verification_code = verification_code
+            self.tg_user.save()
 
-                    reply = (f"Подтвердите, пожалуйста, свой аккаунт. "
-                             f"Для подтверждения необходимо ввести код: {verification_code} "
-                             f"на сайте")
-                    self.tg_client.send_message(chat_id=self.chat_id, text=reply)
+        reply = (f"Подтвердите, пожалуйста, свой аккаунт. "
+                 f"Для подтверждения необходимо ввести код: {verification_code} "
+                 f"на сайте")
+        return reply
 
-    def _choose_category(self):
-        """Logic for /create command"""
-        pass
+    def _goals(self) -> list:
+        """Logic for /goals command - choose category"""
+        goals = Goal.objects.filter(
+            category__board__participants__user=self.user.user, is_deleted=False
+        ).all()
+        return [f'#{goal.id} {goal.title}' for goal in goals]
 
+    def _create(self) -> list:
+        """Logic for /create command - list of categories"""
+        categories = Category.objects.filter(
+            board__participants__user=self.user.user, is_deleted=False
+        ).all()
+
+        self.category_mode = True
+
+        return [f'#{category.id} {category.title}' for category in categories]
+
+    def _choose_category(self) -> str:
+        """Logic for /create command - choose category"""
+
+        self.category = Category.objects.filter(
+            pk=int(self.message), board__participants__user=self.user.user, is_deleted=False
+        ).first()
+
+        if not self.category:
+            reply = f'Неверная категория'
+        else:
+            reply = f'Категория выбрана. Пришлите название задачи'
+            self.goal_mode = True
+            self.category_mode = False
+
+        return reply
+
+    def _create_goal(self) -> str:
+        """Logic for /create command - create goal"""
+        self.goal = Goal.objects.create(
+            user=self.user.user, title=self.message, category=self.category
+        )
+        self.goal_mode = False
+        return f'Задача "{self.goal.title}" создана'
+
+    def _send_reply(self, reply: str | list) -> None:
+        """Send reply"""
+        if type(reply) == list:
+            for item in reply:
+                self.tg_client.send_message(chat_id=self.chat_id, text=item)
+        else:
+            self.tg_client.send_message(chat_id=self.chat_id, text=reply)
