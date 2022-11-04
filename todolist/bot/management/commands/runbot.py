@@ -14,10 +14,10 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         offset = 0
         tg_client = TgClient(TG_TOKEN)
-        print(TG_TOKEN)
 
         while True:
             response = tg_client.get_updates(offset=offset)
+            print(response.status)
             for item in response.result:
                 offset = item.update_id + 1
 
