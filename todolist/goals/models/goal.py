@@ -23,8 +23,8 @@ class Goal(DatesModelMixin):
         critical = 4, "Критический"
 
     title = models.CharField(verbose_name="Заголовок", max_length=255)
-    description = models.CharField(verbose_name="Описание", max_length=500)
-    due_date = models.DateTimeField(verbose_name="Дата выполнения")
+    description = models.CharField(verbose_name="Описание", max_length=500, null=True)
+    due_date = models.DateTimeField(verbose_name="Дата выполнения", null=True)
     status = models.PositiveSmallIntegerField(
         verbose_name="Статус", choices=Status.choices, default=Status.to_do
     )
