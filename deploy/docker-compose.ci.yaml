@@ -49,6 +49,7 @@ services:
       - ./.env:/code/.env
     networks:
       - todolist_db_network
+    restart: always
     command: >
       sh -c "python manage.py runbot"
 
