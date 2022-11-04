@@ -1,7 +1,5 @@
 import requests
 
-from marshmallow_dataclass import class_schema
-
 from ._dc import GetUpdatesResponse, SendMessageResponse
 
 
@@ -43,9 +41,3 @@ class TgClient:
         response = requests.post(url=url, headers=headers, json=payload)
 
         return SendMessageResponse.Schema().load(response.json())
-
-
-if __name__ == '__main__':
-    cl = TgClient('5677342297:AAHOFv46hV1rbRxgNPjQLhkOUSQ6rXvGl-A')
-    print(cl.get_updates(offset=0, timeout=5))
-    print(cl.send_message(chat_id=181467813, text="hello"))
