@@ -113,8 +113,8 @@ class Command(BaseCommand):
         """Logic for /goals command - choose category"""
         goals = Goal.objects.filter(
             category__board__participants__user=self.user.user, is_deleted=False
-        ).all()
-        prefix = ['Cписок ваших целейй:']
+        ).only('id', 'title')
+        prefix = ['Cписок ваших целей:']
         reply = [f'#{goal.id} {goal.title}' for goal in goals]
         return prefix + reply
 
@@ -124,7 +124,7 @@ class Command(BaseCommand):
             board__participants__user=self.user.user,
             board__participants__role__in=[BoardParticipant.Role.owner, BoardParticipant.Role.writer],
             is_deleted=False
-        ).all()
+        ).only('id', 'title')
         self.category_mode = True
         prefix = ['Введите номер категории зи списка доступных:']
         reply = [f'#{category.id} {category.title}' for category in categories]
@@ -163,7 +163,7 @@ class Command(BaseCommand):
 
     def _send_reply(self, reply: str | list) -> None:
         """Send reply"""
-        if type(reply) == list:
+        if isinstance(reply, list):
             for item in reply:
                 self.tg_client.send_message(chat_id=self.chat_id, text=item)
         else:
