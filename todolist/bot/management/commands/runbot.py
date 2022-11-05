@@ -19,12 +19,14 @@ class Command(BaseCommand):
         self.chat_id: int
         self.tg_user_id: int
         self.message: str
+        self.message_id: int
 
         self.user: TgUser = None
         self.tg_user: TgUser
         self.category: Category
         self.goal: Goal
 
+        self.reply_required: bool = False
         self.category_mode: bool = False
         self.goal_mode: bool = False
         super().__init__()
@@ -33,12 +35,13 @@ class Command(BaseCommand):
         while True:
             self._get_response()
 
-            if self.user:
-                reply = self._main_logic()
-            else:
-                reply = self._verify()
+            if self.reply_required:
+                if self.user:
+                    reply = self._main_logic()
+                else:
+                    reply = self._verify()
 
-            self._send_reply(reply=reply)
+                self._send_reply(reply=reply)
 
     def _get_response(self) -> None:
         """Get key data from response"""
@@ -54,6 +57,14 @@ class Command(BaseCommand):
             self.user = TgUser.objects.filter(
                 tg_user_id=self.tg_user_id, user_id__isnull=False
             ).first()
+
+            # check if message is new
+            if not self.message_id == item.message.message_id:
+                self.reply_required = False
+            else:
+                self.reply_required = True
+
+            self.message_id = item.message.message_id
 
     def _main_logic(self) -> str:
         """Logic for verified user"""
