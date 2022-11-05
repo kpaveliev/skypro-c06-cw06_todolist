@@ -19,7 +19,7 @@ class Command(BaseCommand):
         self.chat_id: int
         self.tg_user_id: int
         self.message: str
-        self.message_id: int
+        self.message_id: int = 0
 
         self.user: TgUser = None
         self.tg_user: TgUser
