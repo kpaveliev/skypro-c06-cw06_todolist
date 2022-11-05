@@ -42,6 +42,8 @@ class Command(BaseCommand):
                     reply = self._verify()
 
                 self._send_reply(reply=reply)
+                self.reply_required = False
+
 
     def _get_response(self) -> None:
         """Get key data from response"""
@@ -59,9 +61,7 @@ class Command(BaseCommand):
             ).first()
 
             # check if message is new
-            if self.message_id == item.message.message_id:
-                self.reply_required = False
-            else:
+            if not self.message_id == item.message.message_id:
                 self.reply_required = True
 
             self.message_id = item.message.message_id
