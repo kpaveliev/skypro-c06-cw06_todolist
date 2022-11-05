@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'django_filters',
     'core',
     'goals',
+    'bot',
     'drf_spectacular',
 ]
 
@@ -173,6 +174,10 @@ SPECTACULAR_SETTINGS = {
     'DESCRIPTION': 'API for todolist application',
     'VERSION': '1.0.0',
 }
+
+# Telegram Bot
+
+TG_TOKEN = env('TG_TOKEN')
 
 
 

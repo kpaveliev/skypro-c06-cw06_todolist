@@ -13,19 +13,22 @@ Backend for task-tracking application
 
 ### Features
 
-1. Authentication:
+1. Authentication and User (core app):
    - VK Oauth
    - basic django authentication
-2. User:
    - profile update
    - password change
-3. Board interface:
+2. Main interface (goals app):
    - basic CRUD with filters and sorting: boards, goals, categories, comments
    - user can view items related to the boards he's member of (owner, writer or reader)
    - user can create categories, goals, comments only if he's owner/writer of the related board
    - user can update, delete only if he's owner/writer of the related board
    - user can update, delete only his comments
    - when board, category is marked as is_deleted, all child categoris, goals are also marked as is_deleted
+3. Telegram bot (bot app):
+   - user need to verify identity using verification code
+   - user could view and create goals
+   - bot telegram username: @TodolistT1000Bot
 
 ## How to launch project in development environment
 
@@ -75,7 +78,7 @@ Backend for task-tracking application
    - env variables: deploy/.ci_env
    - variables in compose and env files are replaced with github secrets
 3. Docker hub images:
-   - front: sermalenk/skypro-front:lesson-34
+   - front: sermalenk/skypro-front:lesson-38
    - back: kpaveliev/skypro-c06-cw06-todolist:<tag>
 4. To add admin during first launch:
    - connect to server and access project folder
@@ -84,6 +87,6 @@ Backend for task-tracking application
 5. Addresses:
    - front: http://kpaveliev-skypro.cf
    - admin: http://kpaveliev-skypro.cf/admin/
-   - swagger: http://kpaveliev-skypro.cf:8000/api/schema/swagger-ui/
+   - swagger: http://kpaveliev-skypro.cf/api/schema/swagger-ui/
    
 

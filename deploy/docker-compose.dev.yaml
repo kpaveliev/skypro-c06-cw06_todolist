@@ -3,14 +3,14 @@ version: '3.8'
 services:
 
   frontend:
-    image: sermalenk/skypro-front:lesson-37
+    image: sermalenk/skypro-front:lesson-38
     ports:
       - "8080:80"
     depends_on:
       - db
       - api
     networks:
-      - avito_front_network
+      - todolist_front_network
 
   api:
     build: ../todolist/.
@@ -24,8 +24,8 @@ services:
     volumes:
       - ./.docker_env:/code/.env
     networks:
-      - avito_front_network
-      - avito_db_network
+      - todolist_front_network
+      - todolist_db_network
 
 
   migrations:
@@ -36,9 +36,23 @@ services:
     volumes:
       - ./.docker_env:/code/.env
     networks:
-      - avito_db_network
+      - todolist_db_network
     command: >
       sh -c "python manage.py migrate"
+
+  bot:
+    build: ../todolist/.
+    depends_on:
+      migrations:
+        condition: service_completed_successfully
+      db:
+        condition: service_healthy
+    volumes:
+      - ./.docker_env:/code/.env
+    networks:
+      - todolist_db_network
+    command: >
+      sh -c "python manage.py runbot"
 
 
   db:
@@ -53,7 +67,7 @@ services:
     ports:
       - "5432:5432"
     networks:
-      - avito_db_network
+      - todolist_db_network
     healthcheck:
       test: [ "CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}" ]
       interval: 5s
@@ -66,5 +80,5 @@ volumes:
 
 
 networks:
-  avito_db_network:
-  avito_front_network:
+  todolist_db_network:
+  todolist_front_network:
