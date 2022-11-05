@@ -59,7 +59,7 @@ class Command(BaseCommand):
             ).first()
 
             # check if message is new
-            if not self.message_id == item.message.message_id:
+            if self.message_id == item.message.message_id:
                 self.reply_required = False
             else:
                 self.reply_required = True
